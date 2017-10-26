@@ -104,4 +104,16 @@ and Flow says :
 No errors!
 ```
 
-I personally recommend using `mixed` to type the output of any function that we think we won't interact with its output. Good candidates for `mixed` are callback functions. Another use case I usually see is about [Using methods of Object](Object.md)
+I personally recommend using `mixed` to type the output of any function that we think we won't care about its output later. Good candidates for `mixed` are callback functions. A common pattern in React is to define a function passed in property to a component:
+
+```js
+/* @flow */
+type Props = {
+  value: string,
+  onClick: (event: SyntheticEvent<HTMLButtonElement>) => mixed,
+};
+```
+
+I would say that if we used `mixed` in a variable's type declaration, we should somehow figure out the exact type of this variable later by using [refinement](https://flow.org/en/docs/lang/refinements/) but even with that we cannot handle all the cases because `mixed` is just a union of types. So I recommend using [union](https://flow.org/en/docs/types/unions/) type instead to have a clear idea about the type definition of a variable then.
+
+Another use case I usually see `mixed` is documented in [Using methods of Object](Object.md)
