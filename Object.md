@@ -9,18 +9,18 @@ Imagine that for some reason, instead of having an array containing items of a s
 ```js
 /* @flow */
 type Profession = {
-  name: string,
+  title: string,
   salary: number,
 };
-type People = { [name: string]: Profession };
+type People = { [title: string]: Profession };
 
 const people: People = {
   Thomas: {
-    name: 'Teacher',
+    title: 'Teacher',
     salary: 10000,
   },
   Kenzo: {
-    name: 'Engineer',
+    title: 'Engineer',
     salary: 20000,
   },
 };
@@ -60,14 +60,28 @@ So what's the problem? How do we type it correctly? As a novice JavaScript devel
 
 ## Explanation
 
+Here is an extract from [core.js](https://github.com/facebook/flow/blob/master/lib/core.js) of Flow project:
 
 ```js
 declare class Object {
   ...
   static entries(object: any): Array<[string, mixed]>;
+  ...
   static values(object: any): Array<mixed>;
 }
 ```
 
+From Flow documentation about [Width Subtyping](https://flow.org/en/docs/lang/width-subtyping/), having an object `person` with the type `type Person = { name: string }` means that `person.name` has the type `string`. But it also means that `person` may have other properties.
+
+```js
+/* @flow */
+type Person = { name: string };
+const person: Person = {
+  name: 'Thierry',
+  age: 20,
+};
+```
+
+In this case, `Object.values(person)` will return `["Thierry", 20]` which is an array of a `string` and a `number`. And these don't have the same properties and methods. So that explain the extracted code above.
 
 ## In practice
