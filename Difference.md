@@ -12,7 +12,7 @@ From my point of view:
   - `mixed` type is simply a union of all the basic types (string, number, boolean...)
   - `any` type is a dynamic type, it can be anything and anything can be typed `any`
 
-Let's get started with some simple examples of `mixed` and `any` to clarify that.
+Let's walk through some simple examples of `mixed` and `any` to clarify that.
 
 First:
 
@@ -51,13 +51,57 @@ We get an error from Flow:
                    ^ number
 ```
 
-So a *mixed-typed* cannot **flow into** any type variable. It is simply because `mixed` could be a number, a boolean or something else. It doesn't has to be a number.
+So a *mixed-typed* can't **flow into** any type variable. It is simply because a `mixed` could be a number, a boolean or something else. It doesn't has to be a number.
 
 And what about `Object`?
 
+`Object` is something equivalent to `{}` but unlike `mixed`, only Object can **flow into** it but not other primitive types like `string`, `number`, `boolean`, or `function`.
 
+```js
+/* @flow */
+const variable_1: Object = {
+  a: '1',
+  b: '2',
+};
+const variable_2: Object = 5;
+const variable_3: Object = [5];
+```
 
+We will get 
+```js
+6: const variable_2: Object = 5;
+                              ^ number. This type is incompatible with
+6: const variable_2: Object = 5;
+                     ^ object type
+7: const variable_3: Object = [5];
+                              ^ array literal. This type is incompatible with
+7: const variable_3: Object = [5];
+                     ^ object type
+```
 
 ## In practice
 
-Avoid `any`, `Object` at all cost.
+Avoid `any`, `Object` at all cost. **They are both completely unsafe.**
+
+If a variable is treated as `any`, we will loose all advantages of Flow's type checking. Flow usually uses `any` to type the ouput of third party libraries (example: `node_modules`, if the library doesn't come from [flow-typed](https://github.com/flowtype/flow-typed)).
+
+If a variable is treated as `Object`, Flow will allow us to access any property on it and do whatever we want with that property. For example :
+
+```js
+/* @flow */
+const variable: Object = {
+  a: '1',
+  b: '2',
+};
+
+const number: number = variable.a;
+const sum: number = variable.b + 3;
+```
+
+and Flow says :
+
+```js
+No errors!
+```
+
+I personally recommend using `mixed` to type the output of any function that we think we won't interact with its output. Good candidates for `mixed` are callback functions. Another use case I usually see is about [Using methods of Object](Object.md)
