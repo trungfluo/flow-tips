@@ -1,4 +1,4 @@
-Motivation
+**Motivation**
 
 After months working with Flow - the static type checker for JavaScript open-sourced by Facebook - I think it would be beneficial if there's a guide about gotchas, tips or tricks to use Flow correctly and make full use of its advantages.
 
