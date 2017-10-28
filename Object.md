@@ -68,7 +68,7 @@ and no Flow errors :
 No errors!
 ```
 
-Ok so what's the problem? How do we type it correctly? As a novice JavaScript developer, it will take some time to tear the hair before finding out a truly sound solution. I will explain why we got these Flow errors and why not to use the `Object.keys` work-around. 
+Ok so what's the problem? How do we type it correctly? As a novice JavaScript developer, it will take some time to tear the hair to find out a solution. I will explain why we got these Flow errors and why the `Object.keys` work-around isn't a truly sound solution. 
 
 ## Explanation
 
@@ -131,3 +131,17 @@ because:
 With the definition of Object methods above, Flow cannot be intelligent enough to figure out the exact type of `Object.values` and `Object.entries`.
 
 ## In practice
+
+At the present (Flow version 0.57.3), the Flow team are working on it this [issue](https://github.com/facebook/flow/issues/2174#issuecomment-270214242). In practice, we have nearly two possibilities:
+
+- Using the `Object.keys` work-around.
+- Using `Object.values` or `Object.entries` + `any` casting :
+
+```js
+const salaries: Array<number> = Object.values(people).map(person => {
+  return (person: any).salary;
+});
+```
+- Using [map-obj](https://www.npmjs.com/package/map-obj) but once again, it introduces a more library to maintain in our codebase just for an issue of Flow.
+
+I have a personal preference on using `any` casting even if it is not safe. But this is the only place I use `any` while waiting for a better improvement from Flow. It also helps me find all `any` easily oneday and fix all this when new version of Flow comes out.
