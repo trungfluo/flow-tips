@@ -25,7 +25,7 @@ const people: People = {
   },
 };
 
-Object.values(people).map(person => {
+const salaries: Array<number> = Object.values(people).map(person => {
   return person.salary;
 });
 ```
@@ -42,7 +42,7 @@ We will get an error from Flow saying that:
 And if we want to iterate this `people` object by using :
 
 ```js
-Object.entries(people).map(([name, person]) => {
+const descriptions: Array<string> = Object.entries(people).map(([name, person]) => {
   return `name : ${name}, salary: ${person.salary}`;
 });
 ```
@@ -83,7 +83,7 @@ declare class Object {
 }
 ```
 
-From Flow documentation about [Width Subtyping](https://flow.org/en/docs/lang/width-subtyping/), having an object `person` with the type `type Person = { name: string }` means that `person.name` has the type `string`. But it cannot prevent `person` from having other properties.
+Let's take a simple example. From Flow documentation about [Width Subtyping](https://flow.org/en/docs/lang/width-subtyping/), having an object `person` with the type `type Person = { name: string }` means that `person.name` has the type `string`. But it cannot prevent `person` from having other properties.
 
 ```js
 /* @flow */
@@ -94,6 +94,40 @@ const person: Person = {
 };
 ```
 
-In this case, `Object.values(person)` will return `["Thierry", 20]` which is an array of a `string` and a `number`. And these don't have the same properties and methods. So that explains the extracted code above.
+In this case, `Object.values(person)` will return `["Thierry", 20]` which is an array of a `string` and a `number`. And these aren't the same type which means they don't have the same properties and methods. **So that explains the extracted code above about the result as `Array<mixed>` type.**
+
+With the same example, we would get a surprise if we expected to have an array of `string` by doing:
+
+```js
+const names: Array<string> = Object.keys(person).map(name => person[name]);
+```
+
+Flow wouldn't warn us about any error but we would possibly get one at runtime by presuming that all elements in `names` are `string` and doing some string operation as usual. As a result, **`Object.keys` isn't a truly sound work-around.**
+
+Let's get back to our first example with the types `Profession` and `People`. Although we cannot have something like the second example before:
+
+```js
+const people: People = {
+  Thomas: {
+    name: 'Teacher',
+    salary: 10000,
+  },
+  Kenzo: {
+    name: 'Engineer',
+    salary: 20000,
+  },
+  Arthur: 'Xebia',
+};
+```
+because:
+
+```js
+17:   Arthur: 'Xebia',
+              ^ string. This type is incompatible with
+6: type People = { [name: string]: Profession };
+                                   ^ object type
+```
+
+With the definition of Object methods above, Flow cannot be intelligent enough to figure out the exact type of `Object.values` and `Object.entries`.
 
 ## In practice
