@@ -1,6 +1,6 @@
 ## Problem
 
-With the rise of ES2016 and functional programming in JavaScript, we tend to use frequently two methods of an Object: [Object.values](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Object/values) and [Object.entries](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Object/entries).
+With the rise of ES2016 and functional programming in JavaScript, we tend to use frequently two methods of an Object: [Object.values](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values) and [Object.entries](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Objets_globaux/Object/entries).
 
 But apparently there's an issue that many of us have run through when using these methods.
 
@@ -56,7 +56,19 @@ Flow also warns us about:
                                         ^ mixed
 ```
 
-So what's the problem? How do we type it correctly? As a novice JavaScript developer, it will take some time to tear the hair before finding out a sound solution.
+I saw some work-around examples not to use `Object.values` or `Object.entries` but the old classic method [Object.keys](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys) as follow:
+
+```js
+const details: Array<Profession> = Object.keys(people).map(name => people[name]);
+```
+
+and no Flow errors :
+
+```js
+No errors!
+```
+
+Ok so what's the problem? How do we type it correctly? As a novice JavaScript developer, it will take some time to tear the hair before finding out a truly sound solution. I will explain why we got these Flow errors and why not to use the `Object.keys` work-around. 
 
 ## Explanation
 
@@ -71,7 +83,7 @@ declare class Object {
 }
 ```
 
-From Flow documentation about [Width Subtyping](https://flow.org/en/docs/lang/width-subtyping/), having an object `person` with the type `type Person = { name: string }` means that `person.name` has the type `string`. But it also means that `person` may have other properties.
+From Flow documentation about [Width Subtyping](https://flow.org/en/docs/lang/width-subtyping/), having an object `person` with the type `type Person = { name: string }` means that `person.name` has the type `string`. But it cannot prevent `person` from having other properties.
 
 ```js
 /* @flow */
@@ -82,6 +94,6 @@ const person: Person = {
 };
 ```
 
-In this case, `Object.values(person)` will return `["Thierry", 20]` which is an array of a `string` and a `number`. And these don't have the same properties and methods. So that explain the extracted code above.
+In this case, `Object.values(person)` will return `["Thierry", 20]` which is an array of a `string` and a `number`. And these don't have the same properties and methods. So that explains the extracted code above.
 
 ## In practice
