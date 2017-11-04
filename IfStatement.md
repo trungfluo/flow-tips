@@ -7,3 +7,5 @@ Suppose that
 ## In practice
 
 **Make illegal states unrepresentable**
+
+**Code for exhaustiveness**
