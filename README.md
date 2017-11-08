@@ -6,3 +6,5 @@
 * [Variance](Variance.md)
 * [If Statement](IfStatement.md)
 * [Result type](ResultType.md)
+* [Third party lib](ThirdParty.md)
+* [Exact types](ExactType.md)
