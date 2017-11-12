@@ -7,3 +7,4 @@
 * [If Statement](IfStatement.md)
 * [Result type](ResultType.md)
 * [Exact types](ExactType.md)
+* [Interface versus Type](Interface_versus_Type.md)
