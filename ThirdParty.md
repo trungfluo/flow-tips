@@ -1,4 +1,0 @@
-## Problem
-
-
-## In Pratice
