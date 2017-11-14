@@ -66,7 +66,7 @@ we get some errors:
                    ^ Illegal return statement
 ```
 
-So the major difference is if we wan to use `implements` for ES2015 Class, we must use an `interface`, not a `type`.
+So the major difference is if we want to use `implements` for ES2015 Class, we must use an `interface`, not a `type`.
 
 Again from the [docs](https://flow.org/en/docs/types/interfaces/):
 
