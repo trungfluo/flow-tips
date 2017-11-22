@@ -138,9 +138,7 @@ At the present (Flow version 0.57.3), the Flow team are working on it this [issu
 - Using `Object.values` or `Object.entries` + `any` casting :
 
 ```js
-const salaries: Array<number> = Object.values(people).map(person => {
-  return (person: any).salary;
-});
+const salaries: Array<number> = Object.values(people).map((person: any) => person.salary);
 ```
 - Using [map-obj](https://www.npmjs.com/package/map-obj) but once again, it introduces a more library to maintain in our codebase just for an issue of Flow.
 
